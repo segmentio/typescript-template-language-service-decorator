@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 /**
  * Define which tagged templates to process and how to parse them.
  */
@@ -11,14 +8,12 @@ export default interface TemplateSettings {
      * The tag string may be matched at either the start or the end of the template's tag.
      */
     readonly tags: ReadonlyArray<string>;
-
     /**
      * Should templates with substitutions be processed?
      *
      * Defaults to false.
      */
     readonly enableForStringWithSubstitutions?: boolean;
-
     /**
      * Retrieve a string that is used internally in place of the substitution expression.
      *
@@ -28,12 +23,7 @@ export default interface TemplateSettings {
      *
      * @return Replacement string. Must be the of length `end - start`.
      */
-    getSubstitution?(
-        templateString: string,
-        start: number,
-        end: number
-    ): string;
-
+    getSubstitution?(templateString: string, start: number, end: number): string;
     /**
      * Retrieve a string that is used internally in place of the substitution expression.
      *
@@ -44,9 +34,8 @@ export default interface TemplateSettings {
      *
      * @return Replacement string. Must be the exact same length as the input string
      */
-    getSubstitutions?(
-        templateString: string,
-        spans: ReadonlyArray<{ start: number, end: number }>,
-        node: ts.TemplateExpression
-    ): string;
+    getSubstitutions?(templateString: string, spans: ReadonlyArray<{
+        start: number;
+        end: number;
+    }>, node: ts.TemplateExpression): string;
 }
