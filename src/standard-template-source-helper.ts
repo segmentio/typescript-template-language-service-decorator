@@ -48,7 +48,7 @@ class PlaceholderSubstituter {
         node: ts.TemplateExpression
     ): string {
         if (settings.getSubstitutions) {
-            return settings.getSubstitutions(contents, locations, node);
+            return settings.getSubstitutions(node);
         }
 
         const parts: string[] = [];

@@ -45,8 +45,6 @@ export default interface TemplateSettings {
      * @return Replacement string. Must be the exact same length as the input string
      */
     getSubstitutions?(
-        templateString: string,
-        spans: ReadonlyArray<{ start: number, end: number }>,
         node: ts.TemplateExpression
     ): string;
 }
