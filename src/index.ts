@@ -10,11 +10,24 @@ import TemplateLanguageServiceDecorator from './template-language-service-decora
 import TemplateContext from './template-context';
 import StandardTemplateSourceHelper from './standard-template-source-helper';
 
+interface TemplateSubstitution {
+    start: number,
+    oldStop: number,
+    newStop: number
+}
+
+interface TemplateSubstitutions {
+    text: string
+    substitutions: TemplateSubstitution[]
+}
+
 export {
     Logger,
     TemplateLanguageService,
     TemplateSettings,
-    TemplateContext
+    TemplateContext,
+    TemplateSubstitution,
+    TemplateSubstitutions
 };
 
 /**

@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+import * as ts from 'typescript/lib/tsserverlibrary';
+
 /**
  * Define which tagged templates to process and how to parse them.
  */
@@ -46,5 +48,12 @@ export default interface TemplateSettings {
      */
     getSubstitutions?(
         node: ts.TemplateExpression
-    ): string;
+    ): {
+        text: string,
+        substitutions: {
+            start: number,
+            oldStop: number,
+            newStop: number
+        }[]
+    };
 }

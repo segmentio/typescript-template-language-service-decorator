@@ -39,4 +39,13 @@ export default interface TemplateContext {
      * Map an offset within the template string to a location within the template string
      */
     toPosition(offset: number): ts.LineAndCharacter;
+
+    /**
+     * Get a substitution used within the template string by the first offset in the original string.
+     */
+    getSubstitution(start: number): {
+        start: number,
+        oldStop: number,
+        newStop: number
+    } | undefined
 }

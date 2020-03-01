@@ -1,3 +1,4 @@
+import * as ts from 'typescript/lib/tsserverlibrary';
 /**
  * Define which tagged templates to process and how to parse them.
  */
@@ -34,5 +35,12 @@ export default interface TemplateSettings {
      *
      * @return Replacement string. Must be the exact same length as the input string
      */
-    getSubstitutions?(node: ts.TemplateExpression): string;
+    getSubstitutions?(node: ts.TemplateExpression): {
+        text: string;
+        substitutions: {
+            start: number;
+            oldStop: number;
+            newStop: number;
+        }[];
+    };
 }

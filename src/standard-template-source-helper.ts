@@ -15,17 +15,28 @@ class PlaceholderSubstituter {
         typescript: typeof ts,
         settings: TemplateSettings,
         node: ts.TemplateExpression | ts.NoSubstitutionTemplateLiteral
-    ): string {
+    ): {
+        text: string,
+        substitutions: {
+            start: number,
+            oldStop: number,
+            newStop: number
+        }[]
+    } {
         const literalContents = node.getText().slice(1, -1);
         if (node.kind === typescript.SyntaxKind.NoSubstitutionTemplateLiteral) {
-            return literalContents;
+            return {
+                text: literalContents,
+                substitutions: []
+            }
         }
 
         return PlaceholderSubstituter.getSubstitutions(
             settings,
             literalContents,
             PlaceholderSubstituter.getPlaceholderSpans(node),
-            node);
+            node
+        )
     }
 
     private static getPlaceholderSpans(node: ts.TemplateExpression) {
@@ -46,20 +57,41 @@ class PlaceholderSubstituter {
         contents: string,
         locations: ReadonlyArray<{ start: number, end: number }>,
         node: ts.TemplateExpression
-    ): string {
+    ): {
+        text: string,
+        substitutions: {
+            start: number,
+            oldStop: number,
+            newStop: number
+        }[]
+    } {
         if (settings.getSubstitutions) {
-            return settings.getSubstitutions(node);
+            return settings.getSubstitutions(node)
         }
 
+        const substitutions: {
+            start: number,
+            oldStop: number,
+            newStop: number
+        }[] = []
         const parts: string[] = [];
         let lastIndex = 0;
         for (const span of locations) {
             parts.push(contents.slice(lastIndex, span.start));
             parts.push(this.getSubstitution(settings, contents, span.start, span.end));
+            substitutions.push({
+                start: span.start,
+                oldStop: span.end,
+                newStop: span.end
+            })
             lastIndex = span.end;
         }
         parts.push(contents.slice(lastIndex));
-        return parts.join('');
+
+        return {
+            text: parts.join(''),
+            substitutions
+        }
     }
 
     private static getSubstitution(
@@ -107,15 +139,40 @@ class StandardTemplateContext implements TemplateContext {
 
     @memoize
     public get text(): string {
-        return PlaceholderSubstituter.replacePlaceholders(
+        const { text } = PlaceholderSubstituter.replacePlaceholders(
             this.typescript,
             this.templateSettings,
-            this.node);
+            this.node
+        );
+        return text
     }
 
     @memoize
     public get rawText() {
         return this.node.getText().slice(1, -1);
+    }
+
+    @memoize
+    public getSubstitution(start: number): {
+        start: number,
+        oldStop: number,
+        newStop: number
+    } | undefined {
+        const { substitutions } = PlaceholderSubstituter.replacePlaceholders(
+            this.typescript,
+            this.templateSettings,
+            this.node
+        )
+
+        if (substitutions.length === 0) {
+            return
+        }
+
+        for (const substitution of substitutions) {
+            if (substitution.start === start) {
+                return substitution
+            }
+        }
     }
 }
 

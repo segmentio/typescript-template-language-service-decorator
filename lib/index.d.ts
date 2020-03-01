@@ -3,7 +3,16 @@ import Logger from './logger';
 import TemplateLanguageService from './template-language-service';
 import TemplateSettings from './template-settings';
 import TemplateContext from './template-context';
-export { Logger, TemplateLanguageService, TemplateSettings, TemplateContext };
+interface TemplateSubstitution {
+    start: number;
+    oldStop: number;
+    newStop: number;
+}
+interface TemplateSubstitutions {
+    text: string;
+    substitutions: TemplateSubstitution[];
+}
+export { Logger, TemplateLanguageService, TemplateSettings, TemplateContext, TemplateSubstitution, TemplateSubstitutions };
 /**
  * Configuration of the decorated language service.
  */
